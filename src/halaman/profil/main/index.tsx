@@ -5,6 +5,8 @@ import {TeksBiasa, TeksLink} from '../../../Komponen/Atom';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 import {getDatabase, ref, onValue, update} from 'firebase/database';
+import {getAuth} from 'firebase/auth';
+
 import {
   getStorage,
   ref as storageRef,
@@ -17,7 +19,28 @@ const MainProfile = () => {
   const route = useRoute();
   const {nama, tanggalLahir, kolom} = route.params || {};
   const navigation = useNavigation();
-  // Use the auth context
+
+  const [userData, setUserData] = useState(null);
+
+  const auth = getAuth();
+  const uid = auth.currentUser?.uid;
+
+  useEffect(() => {
+    if (!uid) return;
+
+    const db = getDatabase();
+    const userRef = ref(db, `pembina/${uid}`);
+
+    const unsubscribe = onValue(userRef, snapshot => {
+      if (snapshot.exists()) {
+        setUserData(snapshot.val());
+      } else {
+        console.log('No data available');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [uid]);
 
   const [imageUri, setImageUri] = useState(null);
 
@@ -36,30 +59,23 @@ const MainProfile = () => {
           const uri = response.assets[0].uri;
           setImageUri(uri);
 
-          // Upload image to Firebase Storage
           const storage = getStorage();
-          const imageRef = storageRef(storage, `profile_images/${uid}`);
+          const imageRef = storageRef(storage, `profile_images/${uid}.jpg`);
 
-          // Convert image to blob for upload
+          // Convert to blob and upload
           fetch(uri)
-            .then(response => response.blob())
-            .then(blob => {
-              uploadBytes(imageRef, blob)
-                .then(() => getDownloadURL(imageRef))
-                .then(downloadUrl => {
-                  // Determine which collection to update based on role
-                  const collection =
-                    userData?.role === 'pembina' ? 'pembina' : 'users';
-                  // Update user profile with image URL
-                  const db = getDatabase();
-                  const userRef = ref(db, `${collection}/${uid}`);
-                  update(userRef, {
-                    profileImage: downloadUrl,
-                  });
-                })
-                .catch(error => console.error('Error uploading image:', error));
+            .then(res => res.blob())
+            .then(blob => uploadBytes(imageRef, blob))
+            .then(() => getDownloadURL(imageRef))
+            .then(downloadUrl => {
+              const db = getDatabase();
+              const userRef = ref(db, `pembina/${uid}`);
+              return update(userRef, {profileImage: downloadUrl});
             })
-            .catch(error => console.error('Error fetching image blob:', error));
+            .then(() => {
+              console.log('Image uploaded and URL updated in database');
+            })
+            .catch(err => console.error('Upload error: ', err));
         }
       },
     );
@@ -81,7 +97,6 @@ const MainProfile = () => {
       </TouchableOpacity>
 
       {/* Menampilkan gambar yang dipilih jika ada */}
-      {imageUri && <Image source={{uri: imageUri}} style={styles.image} />}
 
       <Text style={styles.tekstambahfoto}> Informasi Pribadi</Text>
 
@@ -90,13 +105,14 @@ const MainProfile = () => {
         style={styles.iconplus}
       />
 
-      <TeksBiasa label={`Nama : ${nama}`} top={-130} />
-      <TeksBiasa label={`Tanggal Lahir : ${tanggalLahir}`} top={-90} />
-      <TeksBiasa label={`Kolom : ${kolom}`} top={-50} />
+      <TeksBiasa label={`Nama : ${userData?.nama || '-'}`} top={-130} />
+      <TeksBiasa
+        label={`Tanggal Lahir : ${userData?.tanggalLahir || '-'}`}
+        top={-90}
+      />
+      <TeksBiasa label={`Kolom : ${userData?.kolom || '-'}`} top={-50} />
 
-      <View style={styles.garis} />
-      <TeksBiasa label={'3 Kali Hadir'} top={50} left={-50} />
-      <TeksLink
+      {/* <TeksLink
         label={'Lihat Detail'}
         top={85}
         left={-43}
@@ -105,7 +121,7 @@ const MainProfile = () => {
             imageUri: imageUri,
           });
         }}
-      />
+      /> */}
 
       <Bawahan />
     </View>
