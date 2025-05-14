@@ -2,18 +2,18 @@ import React from 'react';
 import 'react-native-gesture-handler';
 // import lainnya...
 //import file
-import Entrance from './halaman/entrance';
-import JadwalIbadah from './halaman/JadwalIbadah';
-import {DetailKehadiran, MainProfile} from './halaman/profil';
-import SignIn from './halaman/signin';
-import {PembinaSignUp, Pilih, RemajaSignUp} from './halaman/signup';
-import Statistik from './halaman/statistik';
+import Entrance from './pages/entrance';
+import JadwalIbadah from './pages/worshipschedule';
+import {DetailKehadiran, MainProfile} from './pages/profil';
+import SignIn from './pages/signin';
+import {PembinaSignUp, Pilih, RemajaSignUp} from './pages/signup';
+import Statistik from './pages/statistik';
 
 //import navigation stuff
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import RemajaDashboard from './halaman/dashboard/remaja';
-import PembinaDashboard from './halaman/dashboard/pembina';
+import RemajaDashboard from './pages/dashboard/remaja';
+import PembinaDashboard from './pages/dashboard/pembina';
 
 import './config/Firebase';
 import FlashMessage from 'react-native-flash-message';
