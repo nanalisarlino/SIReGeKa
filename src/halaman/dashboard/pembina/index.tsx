@@ -47,7 +47,7 @@ const PembinaDashboard: React.FC = () => {
       label: 'Statistik Kehadiran',
       onPress: () => {
         console.log('Statistik Kehadiran');
-        navigation.navigate('Statistik', {nama, tanggalLahir, kolom});
+        navigation.navigate('Statistik');
       },
     },
     {
@@ -55,7 +55,7 @@ const PembinaDashboard: React.FC = () => {
       label: 'Informasi Pribadi',
       onPress: () => {
         console.log('Informasi Pribadi');
-        navigation.navigate('Main Profile');
+        navigation.navigate('Main Profile', {nama, tanggalLahir, kolom});
       },
     },
     {

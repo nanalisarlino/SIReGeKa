@@ -91,17 +91,10 @@ const MainProfile = () => {
       </TouchableOpacity>
       <Atasan label={'REMAJA BAITEL KEMA'} />
 
-      {/* Tombol untuk memilih gambar */}
-      <TouchableOpacity onPress={pickImage}>
-        <View style={styles.bgiconplus} />
-      </TouchableOpacity>
-
-      {/* Menampilkan gambar yang dipilih jika ada */}
-
       <Text style={styles.tekstambahfoto}> Informasi Pribadi</Text>
 
       <Image
-        source={require('../../../assets/ikon/+.png')}
+        source={require('../../../assets/gambar/personal.jpg')}
         style={styles.iconplus}
       />
 
@@ -169,12 +162,12 @@ const styles = StyleSheet.create({
   },
   iconplus: {
     position: 'absolute',
-    width: 35,
-    height: 37,
-    top: 225,
+    width: 130,
+    height: 130,
+    top: 160,
   },
   tekstambahfoto: {
-    top: -300,
+    top: -280,
     fontFamily: 'Inter',
     fontSize: 16,
     color: '#000000',

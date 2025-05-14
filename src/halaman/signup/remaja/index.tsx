@@ -94,7 +94,7 @@ const RemajaSignUp: React.FC = () => {
         type: 'success',
       });
 
-      navigation.navigate('Remaja Dashboard');
+      navigation.navigate('Remaja Dashboard', {nama, tanggalLahir, kolom});
     } catch (error) {
       console.error('Gagal daftar:', error);
       showMessage({

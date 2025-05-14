@@ -23,10 +23,13 @@ const iconMap: Record<string, any> = {
 
 const RemajaDashboard: React.FC = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const {nama, tanggalLahir, kolom} = route.params || {};
 
   useEffect(() => {
     const auth = getAuth();
     const user = auth.currentUser;
+
     if (user) {
       const uid = user.uid;
       const db = getDatabase();
@@ -44,7 +47,7 @@ const RemajaDashboard: React.FC = () => {
       icon: 'personal',
       label: 'Informasi Pribadi',
       onPress: () => {
-        navigation.navigate('Main Profile');
+        navigation.navigate('Main Profile', {nama, tanggalLahir, kolom});
       },
     },
     {
